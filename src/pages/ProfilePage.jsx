@@ -1,5 +1,8 @@
 import ImageFluid from "../components/ImageFluid";
 import Button from "../components/Button";
+import AnimeCard from "../components/AnimeCard";
+import anime from "../profileExampleAnime.js";
+import ScrollableContainer from "../components/ScrollableContainer.jsx";
 
 // temporary example profile, this will later come from database
 const profile = {
@@ -14,10 +17,10 @@ const profile = {
 // user profile
 const ProfilePage = () => {
   return (
-    <main className="sm:flex">
+    <main className="sm:flex mx-auto max-w-7xl gap-5 p-2 sm:p-4">
       {/* user info */}
-      <section className="flex-1">
-        <ImageFluid src={profile.pfpUrl} className="h-96"/>
+      <section className="flex-1 mb-5 sm:mb-0 sm:max-w-sm">
+        <ImageFluid src={profile.pfpUrl} className="h-96" />
         <h2 className="text-2xl">{profile.handle}</h2>
         <p>{profile.bio}</p>
         <p>Followers: {profile.followers}</p>
@@ -26,8 +29,16 @@ const ProfilePage = () => {
       </section>
 
       {/* anime, manga, and stats */}
-      <section className="flex-1">
-        <p>Anime Stats</p>
+      <section className="flex-1 min-w-0">
+        <h2 className="font-medium">Currently Watching</h2>
+        <p className="mb-2 text-xs">
+          These are the anime I'm currently interested in!
+        </p>
+        <ScrollableContainer containerClass="anime-scroll-div">
+          {anime.map((a) => (
+            <AnimeCard key={a.name} anime={a} />
+          ))}
+        </ScrollableContainer>
       </section>
     </main>
   );
