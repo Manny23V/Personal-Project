@@ -26,7 +26,7 @@ export default function LoginForm() {
             return
         }
 
-        navigate('/dashboard')
+        navigate('/')
     }
 
     return (
