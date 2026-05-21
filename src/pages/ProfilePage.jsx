@@ -1,7 +1,9 @@
 import ImageFluid from "../components/ImageFluid";
 import Button from "../components/Button";
 import AnimeCard from "../components/AnimeCard";
+import MangaCard from "../components/MangaCard.jsx";
 import anime from "../profileExampleAnime.js";
+import manga from "../profileExampleManga.js";
 import ScrollableContainer from "../components/ScrollableContainer.jsx";
 
 // temporary example profile, this will later come from database
@@ -47,6 +49,15 @@ const ProfilePage = () => {
           ))}
         </ScrollableContainer>
 
+        <h2 className="font-medium mt-4">Currently Reading</h2>
+        <p className="mb-4 text-xs">
+          I'm currently enjoying these manga!
+        </p>
+        <ScrollableContainer containerClass="manga-scroll-div">
+          {manga.map((m) => (
+            <MangaCard key={m.name} manga={m} />
+          ))}
+        </ScrollableContainer>
       </section>
     </main>
   );
