@@ -20,12 +20,18 @@ const ProfilePage = () => {
     <main className="sm:flex mx-auto max-w-7xl gap-5 p-2 sm:p-4">
       {/* user info */}
       <section className="flex-1 mb-5 sm:mb-0 sm:max-w-sm">
-        <ImageFluid src={profile.pfpUrl} className="h-96" />
-        <h2 className="text-2xl">{profile.handle}</h2>
-        <p>{profile.bio}</p>
-        <p>Followers: {profile.followers}</p>
-        <p>Following: {profile.following}</p>
-        <Button variant="outlined">follow</Button>
+        <ImageFluid src={profile.pfpUrl} className="h-96 mb-4" />
+        <div className="flex flex-wrap justify-between items-center mb-2">
+          <h2 className="mb-1 text-2xl">{profile.handle}</h2>
+          <div className="flex flex-wrap gap-4 text-xs">
+            <p className="text-blue-500">Followers: {profile.followers}</p>
+            <p className="text-blue-500">Following: {profile.following}</p>
+          </div>
+        </div>
+        <p className="mb-6 text-sm">{profile.bio}</p>
+        <Button variant="contained" className="text-sm">
+          follow
+        </Button>
       </section>
 
       {/* anime, manga, and stats */}
@@ -34,11 +40,13 @@ const ProfilePage = () => {
         <p className="mb-2 text-xs">
           These are the anime I'm currently interested in!
         </p>
+
         <ScrollableContainer containerClass="anime-scroll-div">
           {anime.map((a) => (
             <AnimeCard key={a.name} anime={a} />
           ))}
         </ScrollableContainer>
+
       </section>
     </main>
   );
