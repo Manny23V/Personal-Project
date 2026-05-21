@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
-import { supabase } from '../lib/supabaseClient'
+import { supabase } from '../supabaseClient'
 
 export default function LoginForm() {
     const [email, setEmail] = useState('')
