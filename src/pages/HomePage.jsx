@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
-import AnimeProp_HP from '../components/AnimeProp_HP'
+import AnimeCarousel from '../components/HP_Carousel'
 
 
 export default function HomePage() {
     const [animeList, setAnimeList] = useState([])
-    const [loading, setLoading]     = useState(true)
-    const [error, setError]         = useState(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
 
     useEffect(() => {
         fetchPopularAnime()
@@ -47,16 +47,8 @@ export default function HomePage() {
 
     return (
         <div className="min-h-screen p-8">
-
             <h1 className="text-3xl font-bold mb-8">Popular Anime</h1>
-
-            {/* grid of anime cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                {animeList.map((anime) => (
-                    <AnimeProp_HP key={anime.mal_id} anime={anime} />
-                ))}
-            </div>
-
+            <AnimeCarousel animeList={animeList} />
         </div>
     )
 }
