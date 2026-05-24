@@ -2,6 +2,9 @@ import { supabase } from "../supabaseClient.js";
 import sleep from "./sleep.js";
 const JIKAN_BASE_URL = "https://api.jikan.moe/v4";
 
+export const DEFAULT_PFP_URL =
+  "https://i.pinimg.com/474x/94/cb/68/94cb68baea50bb98cdab65b74e731c1c.jpg";
+
 // gets the id of every person that follows the user with user_id
 export const getFollowerIds = async (user_id) => {
   const { data, error } = await supabase
@@ -128,4 +131,15 @@ export const getAllMalResources = async (
     resources.push(resource);
   }
   return resources;
+};
+
+// changes a user's profile picture, bio, or both in db
+export const updateProfile = async (newProfile) => {
+  return await supabase
+    .from("profiles")
+    .update({
+      pfp_url: newProfile.pfp_url,
+      bio: newProfile.bio,
+    })
+    .eq("id", newProfile.id);
 };

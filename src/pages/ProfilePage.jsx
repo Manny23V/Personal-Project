@@ -10,11 +10,13 @@ import LabeledPieChart from "../components/LabeledPieChart.jsx";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import { getAllMalResources, getProfile, getStats } from "../utils/profile.js";
+
 import sleep from "../utils/sleep.js";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
+import EditProfileForm from "../components/EditProfileForm.jsx";
+import { DEFAULT_PFP_URL } from "../utils/profile.js";
 
-const DEFAULT_PFP_URL =
-  "https://i.pinimg.com/474x/94/cb/68/94cb68baea50bb98cdab65b74e731c1c.jpg";
+import { useAuth } from "../utils/useAuth.js";
 
 // user profile
 const ProfilePage = () => {
@@ -25,6 +27,9 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { username } = useParams();
+
+  const [showEditForm, setShowEditForm] = useState(false);
+  const { user } = useAuth();
 
   // fetch profile w/ anime and manga, receives an AbortController
   const getFullProfile = async (controller) => {
@@ -78,18 +83,36 @@ const ProfilePage = () => {
     };
   }, [username]);
 
+  // toggles edit pfp/bio form visibility
+  const handleEditFormVis = () => {
+    setShowEditForm(!showEditForm);
+  };
+
+  // updates pfp, bio after form submit
+  const handleProfileRefresh = (newProfile) => {
+    setProfile({
+      ...profile,
+      pfp_url: newProfile.pfp_url || DEFAULT_PFP_URL,
+      bio: newProfile.bio || "No bio yet...",
+    });
+  };
+
   if (loading) {
     return (
       <main className="flex flex-col items-center max-w-xl mx-auto mt-12 gap-2">
         <LoadingSpinner />
-        <p className="text-sm">Loading profile (this may take a few seconds)...</p>
+        <p className="text-sm">
+          Loading profile (this may take a few seconds)...
+        </p>
       </main>
     );
   }
 
   // use generic vague messages (e.g. "no user found")
   if (error) {
-    return <main className="max-w-xl mx-auto mt-12 p-0 text-center">{error}</main>;
+    return (
+      <main className="max-w-xl mx-auto mt-12 p-0 text-center">{error}</main>
+    );
   }
 
   // watch and read counts
@@ -97,8 +120,18 @@ const ProfilePage = () => {
   const hasEnoughStats =
     Object.values(stats).reduce((acc, curr) => acc + curr, 0) >= 4;
 
+  // can edit the profile
+  const isMyProfile = user ? user.id === profile.id : false;
+
   return (
     <main className="sm:flex mx-auto max-w-7xl gap-5 p-2 sm:p-4">
+      {isMyProfile && showEditForm && (
+        <EditProfileForm
+          currentProfile={profile}
+          onClose={handleEditFormVis}
+          onSubmit={handleProfileRefresh}
+        />
+      )}
       {/* user info */}
       <section className="flex-1 mb-5 sm:mb-0 sm:max-w-sm">
         <ImageFluid
@@ -117,9 +150,21 @@ const ProfilePage = () => {
           </div>
         </div>
         <p className="mb-6 text-sm">{profile.bio || "No bio yet..."}</p>
-        <Button variant="contained" className="mb-10 text-sm">
-          follow
-        </Button>
+        {user && !isMyProfile && (
+          <Button variant="contained" className="mb-2 text-sm">
+            follow
+          </Button>
+        )}
+
+        {isMyProfile && (
+          <Button
+            variant="outlined"
+            className="mb-10 text-xs"
+            onClick={handleEditFormVis}
+          >
+            Edit Profile
+          </Button>
+        )}
 
         {/* statistics */}
         <h2 className="mb-1 font-medium">Statistics</h2>
