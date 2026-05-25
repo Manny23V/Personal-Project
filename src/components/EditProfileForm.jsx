@@ -3,6 +3,7 @@ import Button from "./Button.jsx";
 import ImageFluid from "./ImageFluid.jsx";
 import sleep from "../utils/sleep.js";
 
+import { NOTIFICATION_TIMEOUT } from "./Notification.jsx";
 import { DEFAULT_PFP_URL } from "../utils/profile.js";
 import { baseInputClasses } from "../utils/baseClasses.js";
 import { updateProfile } from "../utils/profile.js";
@@ -11,8 +12,6 @@ import { useState } from "react";
 import { supabase } from "../supabaseClient.js";
 
 import Notification from "./Notification.jsx";
-
-const NOTIFICATION_TIMEOUT = 3000;
 
 // a form for the user to change their profile picture, bio, etc.
 // onSubmit should handle the database submission logic

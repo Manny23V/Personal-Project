@@ -17,6 +17,7 @@ import EditProfileForm from "../components/EditProfileForm.jsx";
 import { DEFAULT_PFP_URL } from "../utils/profile.js";
 
 import { useAuth } from "../utils/useAuth.js";
+import ProfileResourceForm from "../components/ProfileResourceForm.jsx";
 
 // user profile
 const ProfilePage = () => {
@@ -29,6 +30,10 @@ const ProfilePage = () => {
   const { username } = useParams();
 
   const [showEditForm, setShowEditForm] = useState(false);
+
+  // e.g. "anime" or "manga", form to add a new resource to your profile
+  const [resourceFormType, setResourceFormType] = useState(null);
+
   const { user } = useAuth();
 
   // fetch profile w/ anime and manga, receives an AbortController
@@ -88,6 +93,11 @@ const ProfilePage = () => {
     setShowEditForm(!showEditForm);
   };
 
+  // toggles the add anime/manga form's visibility
+  const handleResourceFormVis = (type) => {
+    setResourceFormType(type);
+  };
+
   // updates pfp, bio after form submit
   const handleProfileRefresh = (newProfile) => {
     setProfile({
@@ -95,6 +105,18 @@ const ProfilePage = () => {
       pfp_url: newProfile.pfp_url || DEFAULT_PFP_URL,
       bio: newProfile.bio || "No bio yet...",
     });
+  };
+
+  // re-renders anime and manga after you add one to your profile
+  const handleResourceRefresh = (res) => {
+    switch (resourceFormType) {
+      case "anime":
+        setAnime([...anime, res]);
+        break;
+      case "manga":
+        setManga([...manga, res]);
+        break;
+    }
   };
 
   if (loading) {
@@ -132,6 +154,17 @@ const ProfilePage = () => {
           onSubmit={handleProfileRefresh}
         />
       )}
+
+      {isMyProfile && resourceFormType && (
+        <ProfileResourceForm
+          resourceType={resourceFormType}
+          onClose={() => {
+            handleResourceFormVis(null);
+          }}
+          onSubmit={handleResourceRefresh}
+        />
+      )}
+
       {/* user info */}
       <section className="flex-1 mb-5 sm:mb-0 sm:max-w-sm">
         <ImageFluid
@@ -218,6 +251,17 @@ const ProfilePage = () => {
           </ScrollableContainer>
         )}
 
+        {isMyProfile && (
+          <Button
+            className="mt-2 text-xs"
+            onClick={() => {
+              handleResourceFormVis("anime");
+            }}
+          >
+            Add Anime
+          </Button>
+        )}
+
         <h2 className="font-medium mt-10">Currently Reading</h2>
         <p className="mb-4 text-xs">I'm currently enjoying these manga!</p>
 
@@ -230,6 +274,17 @@ const ProfilePage = () => {
               return <MangaCard key={m.title} manga={m} />;
             })}
           </ScrollableContainer>
+        )}
+
+        {isMyProfile && (
+          <Button
+            className="mt-2 text-xs"
+            onClick={() => {
+              handleResourceFormVis("manga");
+            }}
+          >
+            Add Manga
+          </Button>
         )}
       </section>
     </main>

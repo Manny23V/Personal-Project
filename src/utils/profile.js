@@ -104,8 +104,8 @@ export const getMalResource = async (id, type, abortController) => {
     throw new Error("Invalid resource type");
   }
 
-  const res = await fetch(`${JIKAN_BASE_URL}/${type}/${id}`, {
-    signal: abortController.signal,
+  const res = await fetch(`${JIKAN_BASE_URL}/${type}/${id}`, { 
+    signal: abortController?.signal,
   });
   const json = await res.json();
   return json.data;
@@ -142,4 +142,13 @@ export const updateProfile = async (newProfile) => {
       bio: newProfile.bio,
     })
     .eq("id", newProfile.id);
+};
+
+// adds an anime or manga to your profile
+export const addMalResource = async (userId, resource) => {
+  return await supabase.from(`user_${resource.type}`).insert({
+    user_id: userId,
+    [`${resource.type}_id`]: resource.id,
+    status: resource.status,
+  });
 };

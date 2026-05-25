@@ -1,3 +1,5 @@
+export const NOTIFICATION_TIMEOUT = 3000;
+
 // an error or success notification
 const Notification = ({ type, message, className }) => {
   if (!type) {

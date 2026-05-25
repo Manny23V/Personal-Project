@@ -21,6 +21,7 @@ const Button = ({
   children,
   variant = "contained",
   className = "",
+  type,
   disabled,
   onClick
 }) => {
@@ -48,6 +49,7 @@ const Button = ({
       ${className}
       `}
       onClick={onClick}
+      type={type}
     >
       {children}
     </button>
