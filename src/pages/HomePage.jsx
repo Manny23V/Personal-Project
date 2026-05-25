@@ -4,6 +4,7 @@ import HP_Carousel from '../components/HP_Carousel'
 export default function HomePage() {
   const [popularAnime, setPopularAnime]               = useState([])
   const [recommendedAnime, setRecommendedAnime]       = useState([])
+  const [recommendedManga, setRecommendedManga]       = useState([])
   const [loading, setLoading]                         = useState(true)
   const [error, setError]                             = useState(null)
 
@@ -14,9 +15,10 @@ export default function HomePage() {
   const fetchAll = async () => {
     try {
 
-      const [popularRes, recommendedRes] = await Promise.all([
+      const [popularRes, recommendedRes, recommendedMangaRes] = await Promise.all([
         fetch('https://api.jikan.moe/v4/top/anime'),
         fetch('https://api.jikan.moe/v4/recommendations/anime'),
+        fetch('https://api.jikan.moe/v4/recommendations/manga')
       ])
 
       if (!popularRes.ok || !recommendedRes.ok) {
@@ -24,14 +26,20 @@ export default function HomePage() {
       }
 
       const popularData     = await popularRes.json()
-      const recommendedData = await recommendedRes.json()
+      const recommendedAniData = await recommendedRes.json()
+      const recommendedMaData = await recommendedMangaRes.json()
 
       setPopularAnime(popularData.data)
 
-      const recommendations = recommendedData.data
+      const recommendations = recommendedAniData.data
         .flatMap((item) => item.entry)
 
       setRecommendedAnime(recommendations)
+
+      const recommendationsMA = recommendedMaData.data
+        .flatMap((item) => item.entry)
+
+      setRecommendedManga(recommendationsMA)
 
     } catch (err) {
       setError(err.message)
@@ -67,6 +75,11 @@ export default function HomePage() {
       <section>
         <h2 className="text-2xl font-bold mb-4">Anime Recommendations</h2>
         <HP_Carousel animeList={recommendedAnime} />
+      </section>
+
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Manga Recommendations</h2>
+        <HP_Carousel animeList={recommendedManga} />
       </section>
 
     </div>
