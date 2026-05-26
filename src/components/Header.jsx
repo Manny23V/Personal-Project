@@ -22,10 +22,12 @@ export default function Header({ onSearch }) {
     return (
         <header className="w-full px-8 py-4 border-b border-gray-200 flex items-center justify-between gap-4">
 
+            {/* left: website name */}
             <Link to="/" className="text-xl font-bold shrink-0">
                 AniTrack
             </Link>
 
+            {/* middle: search bar */}
             <form onSubmit={handleSearch} className="flex-1 max-w-xl">
                 <input
                 type="text"
@@ -36,10 +38,17 @@ export default function Header({ onSearch }) {
                 />
             </form>
 
+            {/* right: auth buttons or avatar */}
             <div className="flex items-center gap-3 shrink-0">
                 {user ? (
                 <>
-                    <span className="text-sm text-gray-600">{user.email}</span>
+                    {/* profile picture */}
+                    <img
+                    src={`https://api.dicebear.com/7.x/identicon/svg?seed=${user.email}`}
+                    alt="profile"
+                    className="w-9 h-9 rounded-full border border-gray-200"
+                    />
+
                     <button
                     onClick={handleLogout}
                     className="text-sm text-red-500 hover:underline"
