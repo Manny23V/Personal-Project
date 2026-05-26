@@ -126,7 +126,7 @@ export const getAllMalResources = async (
   const resources = [];
   for (const resourceId of resourceIds) {
     // sleep to avoid rate limits...
-    await sleep(200);
+    await sleep(400);
     const resource = await getMalResource(resourceId, type, abortController);
     resources.push(resource);
   }
