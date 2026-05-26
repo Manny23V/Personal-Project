@@ -8,10 +8,12 @@ import LabeledPieChart from "../components/LabeledPieChart.jsx";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import {
+  followUser,
   getAllMalResources,
   getProfile,
   getStats,
   removeMalResource,
+  unfollowUser,
 } from "../utils/profile.js";
 
 import sleep from "../utils/sleep.js";
@@ -143,6 +145,22 @@ const ProfilePage = () => {
     }
   };
 
+  const handleFollowClick = (isFollowing) => {
+    if (!isFollowing) {
+      followUser(user.id, profile.id);
+      setProfile({
+        ...profile,
+        followerIds: profile.followerIds.concat(user.id),
+      });
+    } else {
+      unfollowUser(user.id, profile.id);
+      setProfile({
+        ...profile,
+        followerIds: profile.followerIds.filter((id) => id !== user.id),
+      });
+    }
+  };
+
   if (loading) {
     return (
       <main className="flex flex-col items-center max-w-xl mx-auto mt-12 gap-2">
@@ -168,6 +186,7 @@ const ProfilePage = () => {
 
   // can edit the profile
   const isMyProfile = user ? user.id === profile.id : false;
+  const isFollowing = user ? profile.followerIds.includes(user.id) : false;
 
   return (
     <main className="sm:flex mx-auto max-w-7xl gap-5 p-2 sm:p-4">
@@ -220,8 +239,14 @@ const ProfilePage = () => {
         </div>
         <p className="mb-6 text-sm">{profile.bio || "No bio yet..."}</p>
         {user && !isMyProfile && (
-          <Button variant="contained" className="mb-2 text-sm">
-            follow
+          <Button
+            variant="contained"
+            className="mb-2 text-sm"
+            onClick={() => {
+              handleFollowClick(isFollowing);
+            }}
+          >
+            {isFollowing ? "unfollow" : "follow"}
           </Button>
         )}
 

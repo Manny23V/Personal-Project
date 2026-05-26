@@ -155,10 +155,38 @@ export const addMalResource = async (userId, resource) => {
 
 // removes a manga or anime from your profile
 export const removeMalResource = async (userId, resId, resType) => {
-  console.log(userId, resId, resType);
   return await supabase
     .from(`user_${resType}`)
     .delete()
     .eq("user_id", userId)
     .eq(`${resType}_id`, resId);
+};
+
+export const followUser = async (followerId, followedId) => {
+  return await supabase.from("follows").insert({
+    follower_id: followerId,
+    followed_id: followedId,
+  });
+};
+
+export const unfollowUser = async (followerId, followedId) => {
+  return await supabase
+    .from("follows")
+    .delete()
+    .eq("follower_id", followerId)
+    .eq("followed_id", followedId);
+};
+
+export const checkIsFollowing = async (followerId, followedId) => {
+  const { data, error } = await supabase
+    .from("follows")
+    .select()
+    .eq("follower_id", followerId)
+    .eq("followed_id", followedId);
+
+  if (error) {
+    return false;
+  }
+
+  return data[0] ? true : false;
 };
