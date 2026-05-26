@@ -2,14 +2,17 @@ import ImageFluid from "../components/ImageFluid";
 import Button from "../components/Button";
 import AnimeCard from "../components/AnimeCard";
 import MangaCard from "../components/MangaCard.jsx";
-import anime from "../profileExampleAnime.js";
-import manga from "../profileExampleManga.js";
 import ScrollableContainer from "../components/ScrollableContainer.jsx";
 import LabeledPieChart from "../components/LabeledPieChart.jsx";
 
 import { useState, useEffect } from "react";
 import { useParams } from "react-router";
-import { getAllMalResources, getProfile, getStats } from "../utils/profile.js";
+import {
+  getAllMalResources,
+  getProfile,
+  getStats,
+  removeMalResource,
+} from "../utils/profile.js";
 
 import sleep from "../utils/sleep.js";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
@@ -18,6 +21,7 @@ import { DEFAULT_PFP_URL } from "../utils/profile.js";
 
 import { useAuth } from "../utils/useAuth.js";
 import ProfileResourceForm from "../components/ProfileResourceForm.jsx";
+import ProfileResourceList from "../components/ProfileResourceList.jsx";
 
 // user profile
 const ProfilePage = () => {
@@ -33,6 +37,9 @@ const ProfilePage = () => {
 
   // e.g. "anime" or "manga", form to add a new resource to your profile
   const [resourceFormType, setResourceFormType] = useState(null);
+
+  // anime or manga list manager view
+  const [resourceListType, setResourceListType] = useState(null);
 
   const { user } = useAuth();
 
@@ -119,6 +126,23 @@ const ProfilePage = () => {
     }
   };
 
+  // brings up the menu
+  const handleResourceListVis = (type) => {
+    setResourceListType(type);
+  };
+
+  // remove anime or manga from your list
+  const handleResourceRemoval = async (resType, res) => {
+    const removedId = res.mal_id;
+    const filterFunc = (r) => r && r.mal_id !== removedId;
+    await removeMalResource(user.id, removedId, resType);
+    if (resType === "anime") {
+      setAnime(anime.filter(filterFunc));
+    } else if (resType === "manga") {
+      setManga(manga.filter(filterFunc));
+    }
+  };
+
   if (loading) {
     return (
       <main className="flex flex-col items-center max-w-xl mx-auto mt-12 gap-2">
@@ -162,6 +186,18 @@ const ProfilePage = () => {
             handleResourceFormVis(null);
           }}
           onSubmit={handleResourceRefresh}
+        />
+      )}
+
+      {/* list to manage anime or manga */}
+      {isMyProfile && resourceListType && (
+        <ProfileResourceList
+          resList={resourceListType === "anime" ? anime : manga}
+          resType={resourceListType}
+          onClose={() => {
+            handleResourceListVis(null);
+          }}
+          onRemoveItem={handleResourceRemoval}
         />
       )}
 
@@ -252,14 +288,23 @@ const ProfilePage = () => {
         )}
 
         {isMyProfile && (
-          <Button
-            className="mt-2 text-xs"
-            onClick={() => {
-              handleResourceFormVis("anime");
-            }}
-          >
-            Add Anime
-          </Button>
+          <div className="flex gap-2 mt-2 text-xs">
+            <Button
+              onClick={() => {
+                handleResourceFormVis("anime");
+              }}
+            >
+              Add Anime
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                handleResourceListVis("anime");
+              }}
+            >
+              Manage Anime List
+            </Button>
+          </div>
         )}
 
         <h2 className="font-medium mt-10">Currently Reading</h2>
@@ -277,14 +322,23 @@ const ProfilePage = () => {
         )}
 
         {isMyProfile && (
-          <Button
-            className="mt-2 text-xs"
-            onClick={() => {
-              handleResourceFormVis("manga");
-            }}
-          >
-            Add Manga
-          </Button>
+          <div className="flex gap-2 mt-2 text-xs">
+            <Button
+              onClick={() => {
+                handleResourceFormVis("manga");
+              }}
+            >
+              Add Manga
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                handleResourceListVis("manga");
+              }}
+            >
+              Manage Manga List
+            </Button>
+          </div>
         )}
       </section>
     </main>
