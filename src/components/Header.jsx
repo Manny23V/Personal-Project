@@ -1,12 +1,41 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { useAuth } from '../utils/useAuth'
 import { supabase } from '../supabaseClient'
 
 export default function Header({ onSearch }) {
     const [searchTerm, setSearchTerm] = useState('')
+    const [dropdownOpen, setDropdownOpen] = useState(false)
+    const [username, setUsername]         = useState('')
     const { user } = useAuth()
     const navigate = useNavigate()
+    const dropdownRef = useRef(null)
+
+    useEffect(() =>{
+        if (!user) return
+
+        const fetchUsername = async () => {
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('username')
+                .eq('id', user.id)
+                .single()
+
+            if (!error) setUsername(data.username)
+        }
+        
+        fetchUsername()
+    }, [user])
+
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+                setDropdownOpen(false)
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside)
+        return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
     const handleSearch = (e) => {
         e.preventDefault()
@@ -38,23 +67,48 @@ export default function Header({ onSearch }) {
                 />
             </form>
 
-            {/* right: auth buttons or avatar */}
+            {/* right: auth buttons or avatar + dropdown */}
             <div className="flex items-center gap-3 shrink-0">
                 {user ? (
                 <>
-                    {/* profile picture */}
+                    {/* avatar */}
                     <img
                     src={`https://api.dicebear.com/7.x/identicon/svg?seed=${user.email}`}
                     alt="profile"
                     className="w-9 h-9 rounded-full border border-gray-200"
                     />
 
+                    {/* username button + dropdown */}
+                    <div className="relative" ref={dropdownRef}>
                     <button
-                    onClick={handleLogout}
-                    className="text-sm text-red-500 hover:underline"
+                        onClick={() => setDropdownOpen(!dropdownOpen)}
+                        className="flex items-center gap-1 text-sm font-medium hover:text-blue-600"
                     >
-                    Logout
+                        {username || user.email}
+                        <span className="text-xs">▾</span>
                     </button>
+
+                    {/* dropdown menu */}
+                    {dropdownOpen && (
+                        <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden z-50">
+
+                        <button
+                            onClick={() => setDropdownOpen(false)}
+                            className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50"
+                        >
+                            Profile
+                        </button>
+
+                        <button
+                            onClick={handleLogout}
+                            className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-50"
+                        >
+                            Logout
+                        </button>
+
+                        </div>
+                    )}
+                    </div>
                 </>
                 ) : (
                 <>
