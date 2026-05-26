@@ -9,9 +9,12 @@ import { useAuth } from "../utils/useAuth.js";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import CommunityCard from "../components/CommunityCard.jsx";
 
+import { baseInputClasses } from "../utils/baseClasses.js";
+
 const CommunitiesPage = () => {
   const [comms, setComms] = useState(null);
   const [error, setError] = useState(null);
+  const [query, setQuery] = useState("");
   const { user } = useAuth();
 
   // get communities
@@ -68,6 +71,10 @@ const CommunitiesPage = () => {
     }
   };
 
+  const handleQueryChange = (e) => {
+    setQuery(e.target.value);
+  };
+
   // error message
   if (error) {
     return (
@@ -90,14 +97,26 @@ const CommunitiesPage = () => {
     ? comms.filter((c) => c.community_memberships.includes(user.id))
     : [];
 
+  // comms filtered when user makes a search
+  const filteredComms = query
+    ? comms.filter((c) => c.name.toLowerCase().includes(query.toLowerCase()))
+    : comms;
+
   return (
     <div className="max-w-300 mx-auto p-3">
       <h2 className="font-medium mb-1">Communities</h2>
       <p className="text-xs mb-4 text-blue-500">
         Browse top communities for anime, manga, and more
       </p>
+      <input
+        type="text"
+        value={query}
+        onChange={handleQueryChange}
+        className={baseInputClasses + " text-sm mb-4 focus:outline-blue-500"}
+        placeholder="Search..."
+      />
       <main className="flex flex-wrap gap-4">
-        {comms.map((c) => (
+        {filteredComms.map((c) => (
           <CommunityCard
             key={c.id}
             comm={c}
