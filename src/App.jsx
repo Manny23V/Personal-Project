@@ -1,11 +1,21 @@
-import "./App.css";
+import { useState } from "react"
+import "./App.css"
+import HomePage from "./pages/HomePage"
+import Header from "./components/Header"
 
 function App() {
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const handleSearch = (query) => {
+    setSearchQuery(query)
+  }
+
   return (
     <>
-      <h1>Welcome to Anime List Tracker</h1>
+      <Header onSearch={handleSearch} />
+      <HomePage searchQuery={searchQuery} />
     </>
-  );
+  )
 }
 
-export default App;
+export default App
