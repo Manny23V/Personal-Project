@@ -91,7 +91,7 @@ export default function Header({ onSearch }) {
                             <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden z-50">
 
                                 <Link
-                                    to="/"
+                                    to={`/communities`}
                                     onClick={() => setMenuDropdownOpen(false)}
                                     className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50"
                                 >
@@ -117,7 +117,7 @@ export default function Header({ onSearch }) {
                             <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden z-50">
 
                                 <Link
-                                    to="/profile"
+                                    to={user ? `/profile/${username}` : `/profile`}
                                     onClick={() => setDropdownOpen(false)}
                                     className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50"
                                 >
@@ -139,7 +139,8 @@ export default function Header({ onSearch }) {
                     <img
                         src={`https://api.dicebear.com/7.x/identicon/svg?seed=${user.email}`}
                         alt="profile"
-                        className="w-9 h-9 rounded-full border border-gray-200"
+                        className="w-9 h-9 rounded-full border border-gray-200 cursor-pointer"
+                        onClick={() => { username && navigate(`/profile/${username}`)}}
                     />
                 </>
                 ) : (
