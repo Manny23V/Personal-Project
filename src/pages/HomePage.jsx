@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import HP_Carousel from '../components/HP_Carousel'
+import AnimeProp_HP from '../components/AnimeProp_HP'
+import MangaProp_HP from '../components/MangaProp_HP'
 
 export default function HomePage({searchQuery}) {
   const [popularAnime, setPopularAnime]               = useState([])
@@ -28,11 +30,11 @@ export default function HomePage({searchQuery}) {
         fetch('https://api.jikan.moe/v4/recommendations/manga')
       ])
 
-      if (!popularRes.ok || !recommendedRes.ok) {
+      if (!popularRes.ok || !recommendedRes.ok || !recommendedMangaRes.ok) {
         throw new Error('Failed to fetch anime')
       }
 
-      const popularData     = await popularRes.json()
+      const popularData = await popularRes.json()
       const recommendedAniData = await recommendedRes.json()
       const recommendedMaData = await recommendedMangaRes.json()
 
@@ -59,7 +61,7 @@ export default function HomePage({searchQuery}) {
     setSearching(true)
     try {
       const response =  await fetch(
-        'https://api.jikan.moe/v4/anime?q=${encodeURIComponent(query)}'
+        `https://api.jikan.moe/v4/anime?q=${encodeURIComponent(query)}`
       )
 
       if (!response.ok) {
@@ -105,7 +107,7 @@ export default function HomePage({searchQuery}) {
         ) : searchResults.length === 0 ? (
           <p className="text-gray-500">No results found.</p>
         ) : (
-          <AnimeCarousel animeList={searchResults} />
+          <HP_Carousel list={searchResults} CardComponent={AnimeProp_HP} />
         )}
 
       </div>
@@ -116,17 +118,17 @@ export default function HomePage({searchQuery}) {
 
       <section>
         <h2 className="text-2xl font-bold mb-4">Popular Anime</h2>
-        <HP_Carousel animeList={popularAnime} />
+        <HP_Carousel list={popularAnime} CardComponent={AnimeProp_HP}/>
       </section>
 
       <section>
         <h2 className="text-2xl font-bold mb-4">Anime Recommendations</h2>
-        <HP_Carousel animeList={recommendedAnime} />
+        <HP_Carousel list={recommendedAnime} CardComponent={AnimeProp_HP}/>
       </section>
 
       <section>
         <h2 className="text-2xl font-bold mb-4">Manga Recommendations</h2>
-        <HP_Carousel animeList={recommendedManga} />
+        <HP_Carousel list={recommendedManga} CardComponent={MangaProp_HP}/>
       </section>
 
     </div>

@@ -1,7 +1,6 @@
 import { useRef } from 'react'
-import AnimeProp_HP from './AnimeProp_HP'
 
-export default function HP_Carousel({ animeList }) {
+export default function HP_Carousel({ list, CardComponent }) {
     const scrollRef = useRef(null)
 
     const scrollLeft = () => {
@@ -28,9 +27,9 @@ export default function HP_Carousel({ animeList }) {
                 ref={scrollRef}
                 className="flex gap-4 overflow-x-auto scroll-smooth px-12 py-2 scrollbar-hide"
             >
-                {animeList.map((anime) => (
-                <div key={anime.mal_id} className="min-w-[160px]">
-                    <AnimeProp_HP anime={anime} />
+                {list.map((item, index) => (
+                <div key={`${item.mal_id}-${index}`} className="min-w-[160px]">
+                    <CardComponent item={item} />
                 </div>
                 ))}
             </div>

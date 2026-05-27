@@ -82,7 +82,7 @@ export default function Header({ onSearch }) {
                         <button onClick={() => setMenuDropdownOpen(!menuDropdownOpen)}
                             className="flex items-center gap-1 text-sm font-medium hover:text-blue-600"
                         >
-                            <button className="text-base">☰</button>
+                            <span className="text-base">☰</span>
                             {'Menu'}
                         </button>
 
