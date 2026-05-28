@@ -68,6 +68,10 @@ export const getProfile = async (username) => {
   }
 };
 
+export const getProfileById = async (userId) => {
+  return await supabase.from("profiles").select().eq("id", userId);
+};
+
 // get current / total watch and read count stats
 export const getStats = (userAnime, userManga) => {
   const stats = {
