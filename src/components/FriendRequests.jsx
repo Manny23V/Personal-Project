@@ -30,7 +30,7 @@ export default function FriendRequests({ requests, onAccepted }) {
                 <div className="flex items-center gap-3">
                 <img
                     src={
-                    req.user.avatar_url ??
+                    req.user.pfp_url ??
                     `https://api.dicebear.com/7.x/identicon/svg?seed=${req.user.username}`
                     }
                     alt={req.user.username}

@@ -17,10 +17,13 @@ export default function FriendSearch({ user, onRequestSent }) {
 
         const { data, error } = await supabase
             .from('profiles')
-            .select('id, username, avatar_url')
+            .select('id, username, pfp_url')
             .eq('username', query.trim())
-            .neq('id', user.id) // exclude yourself
+            .neq('id', user.id)
             .single()
+
+        console.log('Search result:', data)
+        console.log('Search error:', JSON.stringify(error))
 
         setLoading(false)
 
@@ -95,7 +98,7 @@ export default function FriendSearch({ user, onRequestSent }) {
             <div className="flex items-center justify-between border border-gray-200 rounded-xl px-4 py-3">
             <div className="flex items-center gap-3">
                 <img
-                src={result.avatar_url ?? `https://api.dicebear.com/7.x/identicon/svg?seed=${result.username}`}
+                src={result.pfp_url ?? `https://api.dicebear.com/7.x/identicon/svg?seed=${result.username}`}
                 alt={result.username}
                 className="w-9 h-9 rounded-full border border-gray-200 object-cover"
                 />

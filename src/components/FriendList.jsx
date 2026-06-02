@@ -27,7 +27,7 @@ export default function FriendList({ friends, currentUserId }) {
             >
               <img
                 src={
-                  friend.avatar_url ??
+                  friend.pfp_url ??
                   `https://api.dicebear.com/7.x/identicon/svg?seed=${friend.username}`
                 }
                 alt={friend.username}
