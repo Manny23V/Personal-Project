@@ -8,6 +8,7 @@ import LoginPage from "./pages/LoginPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import CommunitiesPage from "./pages/CommunitiesPage.jsx";
 import CommunityDetailPage from "./pages/CommunityDetailPage.jsx";
+import FriendsPage from "./pages/FriendsPage.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -19,6 +20,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/profile/:username" element={<ProfilePage />} />
         <Route path="/communities" element={<CommunitiesPage />} />
         <Route path="/communities/:commId" element={<CommunityDetailPage />} />
+        <Route path="/friends" element={<FriendsPage />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
