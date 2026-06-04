@@ -11,6 +11,7 @@ export default function FriendsPage() {
   const [friends, setFriends] = useState([])
   const [requests, setRequests] = useState([])
   const [loading, setLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState('friends')
 
   const fetchFriends = async () => {
     const { data, error } = await supabase
@@ -19,6 +20,7 @@ export default function FriendsPage() {
         id,
         user_id,
         friend_id,
+        created_at,
         user:profiles!friendships_user_id_fkey(username, pfp_url),
         friend:profiles!friendships_friend_id_fkey(username, pfp_url)
       `)
@@ -49,27 +51,64 @@ export default function FriendsPage() {
     )
   }, [user])
 
-  if (loading) return <p className="p-8 text-gray-400">Loading...</p>
+  const tabs = [
+    { key: 'friends', label: 'Friends' },
+    { key: 'requests', label: `Requests${requests.length > 0 ? ` (${requests.length})` : ''}` },
+    { key: 'search', label: 'Search Friends' },
+  ]
 
   return (
     <>
       <Header onSearch={() => {}} />
-      <div className="max-w-2xl mx-auto px-4 py-8 flex flex-col gap-8">
-        <h1 className="text-2xl font-bold">Friends</h1>
 
-        <FriendSearch user={user} onRequestSent={fetchFriends} />
+      <div className="min-h-screen bg-gray-50 flex justify-center px-4 py-10">
+        <div className="bg-white rounded-2xl shadow-md w-full max-w-5xl flex flex-col" style={{ minHeight: '70vh' }}>
 
-        {requests.length > 0 && (
-          <FriendRequests
-            requests={requests}
-            onAccepted={() => {
-              fetchFriends()
-              fetchRequests()
-            }}
-          />
-        )}
+          {/* tab header */}
+          <div className="flex border-b border-gray-200">
+            {tabs.map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`flex-1 py-4 text-sm font-medium transition-colors
+                  ${activeTab === tab.key
+                    ? 'border-b-2 border-blue-600 text-blue-600'
+                    : 'text-gray-400 hover:text-gray-600'
+                  }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
 
-        <FriendList friends={friends} currentUserId={user.id} />
+          {/* content */}
+          <div className="flex-1 overflow-y-auto p-6">
+            {loading ? (
+              <p className="text-sm text-gray-400">Loading...</p>
+            ) : (
+              <>
+                {activeTab === 'friends' && (
+                  <FriendList friends={friends} currentUserId={user.id} />
+                )}
+
+                {activeTab === 'requests' && (
+                  <FriendRequests
+                    requests={requests}
+                    onAccepted={() => {
+                      fetchFriends()
+                      fetchRequests()
+                    }}
+                  />
+                )}
+
+                {activeTab === 'search' && (
+                  <FriendSearch user={user} onRequestSent={fetchFriends} />
+                )}
+              </>
+            )}
+          </div>
+
+        </div>
       </div>
     </>
   )
