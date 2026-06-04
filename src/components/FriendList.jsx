@@ -1,3 +1,5 @@
+import { Link } from 'react-router'
+
 export default function FriendList({ friends, currentUserId }) {
   if (friends.length === 0) {
     return (
@@ -21,20 +23,18 @@ export default function FriendList({ friends, currentUserId }) {
               : friendship.user
 
           return (
-            <div
+            <Link
+              to={`/profile/${friend.username}`}
               key={friendship.id}
-              className="flex items-center gap-3 border border-gray-200 rounded-xl px-4 py-3"
+              className="flex items-center gap-3 border border-gray-200 rounded-xl px-4 py-3 hover:bg-gray-50 transition-colors"
             >
               <img
-                src={
-                  friend.pfp_url ??
-                  `https://api.dicebear.com/7.x/identicon/svg?seed=${friend.username}`
-                }
+                src={friend.pfp_url ?? `https://api.dicebear.com/7.x/identicon/svg?seed=${friend.username}`}
                 alt={friend.username}
                 className="w-9 h-9 rounded-full border border-gray-200 object-cover"
               />
               <span className="text-sm font-medium">{friend.username}</span>
-            </div>
+            </Link>
           )
         })}
       </div>
