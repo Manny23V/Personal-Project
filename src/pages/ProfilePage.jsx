@@ -25,6 +25,8 @@ import { useAuth } from "../utils/useAuth.js";
 import ProfileResourceForm from "../components/ProfileResourceForm.jsx";
 import ProfileResourceList from "../components/ProfileResourceList.jsx";
 
+import Header from '../components/Header'
+
 // user profile
 const ProfilePage = () => {
   const [profile, setProfile] = useState(null);
@@ -189,6 +191,10 @@ const ProfilePage = () => {
   const isFollowing = user ? profile.followerIds.includes(user.id) : false;
 
   return (
+    <>
+    {/* shows header */}
+    <Header onSearch={() => {}} />
+      
     <main className="sm:flex mx-auto max-w-7xl gap-5 p-2 sm:p-4">
       {isMyProfile && showEditForm && (
         <EditProfileForm
@@ -367,6 +373,7 @@ const ProfilePage = () => {
         )}
       </section>
     </main>
+    </>
   );
 };
 

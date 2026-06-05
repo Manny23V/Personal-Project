@@ -19,6 +19,8 @@ import { useAuth } from "../utils/useAuth.js";
 import useProfile from "../utils/useProfile.js";
 import CommunityPostCard from "../components/CommunityPostCard.jsx";
 
+import Header from '../components/Header'
+
 const MAX_POST_LENGTH = 1000;
 
 const CommunityDetailPage = () => {
@@ -140,6 +142,10 @@ const CommunityDetailPage = () => {
   const isCommunityMember = user ? comm.memberIds.includes(user.id) : false;
 
   return (
+    <>
+    {/* shows header */}
+    <Header onSearch={() => {}} />
+
     <main className="max-w-300 mx-auto px-2 sm:p-4 sm:mt-2 outline outline-gray-300 rounded-sm shadow-xs">
       {/* community image, desc, etc. */}
       <article className="flex flex-col sm:flex-row sm:items-center gap-4">
@@ -230,6 +236,7 @@ const CommunityDetailPage = () => {
         )}
       </section>
     </main>
+    </>
   );
 };
 
