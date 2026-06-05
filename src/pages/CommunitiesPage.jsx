@@ -11,6 +11,8 @@ import CommunityCard from "../components/CommunityCard.jsx";
 
 import { baseInputClasses } from "../utils/baseClasses.js";
 
+import Header from '../components/Header'
+
 const CommunitiesPage = () => {
   const [comms, setComms] = useState(null);
   const [error, setError] = useState(null);
@@ -103,6 +105,10 @@ const CommunitiesPage = () => {
     : comms;
 
   return (
+    <>
+    {/* shows header */}
+    <Header onSearch={() => {}} />
+
     <div className="max-w-300 mx-auto p-3">
       <h2 className="font-medium mb-1">Communities</h2>
       <p className="text-xs mb-4 text-blue-500">
@@ -128,6 +134,7 @@ const CommunitiesPage = () => {
         ))}
       </main>
     </div>
+    </>
   );
 };
 

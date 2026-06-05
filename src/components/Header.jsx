@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { useAuth } from '../utils/useAuth'
 import { supabase } from '../supabaseClient'
+import { DEFAULT_PFP_URL } from '../utils/profile'
 
 export default function Header({ onSearch }) {
     const [searchTerm, setSearchTerm] = useState('')
@@ -12,21 +13,25 @@ export default function Header({ onSearch }) {
     const navigate = useNavigate()
     const dropdownRef = useRef(null)
     const MenuDropdownRef = useRef(null)
+    const [avatarUrl, setAvatarUrl] = useState(null)
 
     useEffect(() =>{
         if (!user) return
 
-        const fetchUsername = async () => {
+        const fetchProfile = async () => {
             const { data, error } = await supabase
                 .from('profiles')
-                .select('username')
+                .select('username, pfp_url')
                 .eq('id', user.id)
                 .single()
 
-            if (!error) setUsername(data.username)
+            if (!error) {
+                setUsername(data.username)
+                setAvatarUrl(data.pfp_url)
+            }
         }
         
-        fetchUsername()
+        fetchProfile()
     }, [user])
 
     useEffect(() => {
@@ -124,6 +129,15 @@ export default function Header({ onSearch }) {
                                     Profile
                                 </Link>
 
+
+                                <Link
+                                    to={`/friends`}
+                                    onClick={() => setDropdownOpen(false)}
+                                    className="block w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50"
+                                >
+                                    Friends
+                                </Link>
+
                                 <button
                                     onClick={handleLogout}
                                     className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-50"
@@ -137,10 +151,9 @@ export default function Header({ onSearch }) {
 
                     {/* avatar */}
                     <img
-                        src={`https://api.dicebear.com/7.x/identicon/svg?seed=${user.email}`}
+                        src={avatarUrl ?? DEFAULT_PFP_URL}
                         alt="profile"
-                        className="w-9 h-9 rounded-full border border-gray-200 cursor-pointer"
-                        onClick={() => { username && navigate(`/profile/${username}`)}}
+                        className="w-9 h-9 rounded-full border border-gray-200 object-cover"
                     />
                 </>
                 ) : (
