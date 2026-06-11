@@ -9,6 +9,8 @@ import ProfilePage from "./pages/ProfilePage.jsx";
 import CommunitiesPage from "./pages/CommunitiesPage.jsx";
 import CommunityDetailPage from "./pages/CommunityDetailPage.jsx";
 import FriendsPage from "./pages/FriendsPage.jsx";
+import AnimeDetailPage from "./components/AnimeDetailPage.jsx";
+import MangaDetailPage from "./components/MangaDetailPage.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -21,6 +23,8 @@ createRoot(document.getElementById("root")).render(
         <Route path="/communities" element={<CommunitiesPage />} />
         <Route path="/communities/:commId" element={<CommunityDetailPage />} />
         <Route path="/friends" element={<FriendsPage />} />
+        <Route path="/anime/:id" element={<AnimeDetailPage />} />
+        <Route path="/manga/:id" element={<MangaDetailPage />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
