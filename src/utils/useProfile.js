@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "./useAuth.js";
 
-import { getProfileById } from "./profile";
+import { getProfileById } from "./profile.js";
 
 // custom hook retrieves the profile of the user,
 // relies on useAuth which subscribes to auth state changes

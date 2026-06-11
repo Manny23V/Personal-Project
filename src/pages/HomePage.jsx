@@ -107,7 +107,7 @@ export default function HomePage({searchQuery}) {
         ) : searchResults.length === 0 ? (
           <p className="text-gray-500">No results found.</p>
         ) : (
-          <HP_Carousel list={searchResults} CardComponent={AnimeProp_HP} />
+          <HP_Carousel list={searchResults} CardComponent={AnimeProp_HP} useDetailPageLink={true}/>
         )}
 
       </div>
@@ -118,17 +118,17 @@ export default function HomePage({searchQuery}) {
 
       <section>
         <h2 className="text-2xl font-bold mb-4">Popular Anime</h2>
-        <HP_Carousel list={popularAnime} CardComponent={AnimeProp_HP}/>
+        <HP_Carousel list={popularAnime} CardComponent={AnimeProp_HP} useDetailPageLink={true}/>
       </section>
 
       <section>
         <h2 className="text-2xl font-bold mb-4">Anime Recommendations</h2>
-        <HP_Carousel list={recommendedAnime} CardComponent={AnimeProp_HP}/>
+        <HP_Carousel list={recommendedAnime} CardComponent={AnimeProp_HP} useDetailPageLink={true}/>
       </section>
 
       <section>
         <h2 className="text-2xl font-bold mb-4">Manga Recommendations</h2>
-        <HP_Carousel list={recommendedManga} CardComponent={MangaProp_HP}/>
+        <HP_Carousel list={recommendedManga} CardComponent={MangaProp_HP} useDetailPageLink={true}/>
       </section>
 
     </div>

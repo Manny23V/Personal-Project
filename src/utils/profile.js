@@ -72,6 +72,35 @@ export const getProfileById = async (userId) => {
   return await supabase.from("profiles").select().eq("id", userId);
 };
 
+export const getFullProfileById = async (userId) => {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select(
+      `
+      *,
+      user_anime(created_at, anime_id, status),
+      user_manga(created_at, manga_id, status)
+      `,
+    )
+    .eq("id", userId);
+
+  if (error) {
+    throw new Error("Error retrieving profile");
+  }
+
+  if (data.length === 0) {
+    throw new Error("User not found");
+  }
+
+  // get follower and following ids
+  const profile = data[0];
+  const followerIds = await getFollowerIds(profile.id);
+  const followingIds = await getFollowingIds(profile.id);
+  profile.followerIds = followerIds;
+  profile.followingIds = followingIds;
+  return profile;
+};
+
 // get current / total watch and read count stats
 export const getStats = (userAnime, userManga) => {
   const stats = {

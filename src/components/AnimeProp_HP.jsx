@@ -1,6 +1,11 @@
-export default function AnimeProp_HP({ item }) {
+import { useNavigate } from "react-router"
+
+export default function AnimeProp_HP({ item, useDetailPageLink=false }) {
+  const navigate = useNavigate();
+
   return (
-    <div className="flex flex-col rounded-lg overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow">
+    <div className={`flex flex-col rounded-lg overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow${useDetailPageLink ? " cursor-pointer" : ""}`}
+    onClick={useDetailPageLink ? () => {navigate(`/anime/${item.mal_id}`)} : null}>
 
       {/* cover image */}
       <img

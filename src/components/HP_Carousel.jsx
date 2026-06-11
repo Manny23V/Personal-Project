@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 
-export default function HP_Carousel({ list, CardComponent }) {
+export default function HP_Carousel({ list, CardComponent, useDetailPageLink=false }) {
     const scrollRef = useRef(null)
 
     const scrollLeft = () => {
@@ -29,7 +29,7 @@ export default function HP_Carousel({ list, CardComponent }) {
             >
                 {list.map((item, index) => (
                 <div key={`${item.mal_id}-${index}`} className="min-w-[160px]">
-                    <CardComponent item={item} />
+                    <CardComponent item={item} useDetailPageLink={useDetailPageLink}/>
                 </div>
                 ))}
             </div>
