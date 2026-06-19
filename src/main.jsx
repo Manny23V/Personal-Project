@@ -11,6 +11,7 @@ import CommunityDetailPage from "./pages/CommunityDetailPage.jsx";
 import FriendsPage from "./pages/FriendsPage.jsx";
 import AnimeDetailPage from "./components/AnimeDetailPage.jsx";
 import MangaDetailPage from "./components/MangaDetailPage.jsx";
+import ChatPage from './pages/ChatPage.jsx'
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -25,6 +26,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/friends" element={<FriendsPage />} />
         <Route path="/anime/:id" element={<AnimeDetailPage />} />
         <Route path="/manga/:id" element={<MangaDetailPage />} />
+        <Route path="/chat/:username" element={<ChatPage />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

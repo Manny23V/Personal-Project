@@ -10,7 +10,7 @@ export default function ConversationList({ currentUser, activeUsername, onSelect
         const fetchConversations = async () => {
         // get the latest message from each unique conversation
             const { data, error } = await supabase
-                .from('messages')
+                .from('chats')
                 .select(`
                 id,
                 content,
@@ -18,8 +18,8 @@ export default function ConversationList({ currentUser, activeUsername, onSelect
                 read,
                 sender_id,
                 receiver_id,
-                sender:profiles!messages_sender_id_fkey(username, pfp_url),
-                receiver:profiles!messages_receiver_id_fkey(username, pfp_url)
+                sender:profiles!chats_sender_id_fkey(username, pfp_url),
+                receiver:profiles!chats_receiver_id_fkey(username, pfp_url)
                 `)
                 .or(`sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`)
                 .order('created_at', { ascending: false })
@@ -53,7 +53,7 @@ export default function ConversationList({ currentUser, activeUsername, onSelect
             .on('postgres_changes', {
                 event: 'INSERT',
                 schema: 'public',
-                table: 'messages',
+                table: 'chats',
             }, () => {
                 fetchConversations()
             })

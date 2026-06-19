@@ -1,6 +1,7 @@
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 
 export default function FriendList({ friends, currentUserId }) {
+  const navigate = useNavigate()
   if (friends.length === 0) {
     return (
       <div className="flex flex-col gap-4">
@@ -53,6 +54,7 @@ export default function FriendList({ friends, currentUserId }) {
                   onClick={(e) => {
                     e.preventDefault()
                     e.stopPropagation()
+                     navigate(`/chat/${friend.username}`)
                   }}
                   className="text-gray-400 hover:text-blue-500 transition-colors"
                   title="Message"

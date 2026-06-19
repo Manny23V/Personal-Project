@@ -27,7 +27,7 @@ export default function ChatWindow({ currentUser, otherUsername }) {
 
         const fetchMessages = async () => {
             const { data, error } = await supabase
-                .from('messages')
+                .from('chats')
                 .select('id, sender_id, receiver_id, content, created_at, read')
                 .or(
                 `and(sender_id.eq.${currentUser.id},receiver_id.eq.${otherUser.id}),and(sender_id.eq.${otherUser.id},receiver_id.eq.${currentUser.id})`
@@ -45,7 +45,7 @@ export default function ChatWindow({ currentUser, otherUsername }) {
 
                 if (unreadIds.length > 0) {
                     await supabase
-                        .from('messages')
+                        .from('chats')
                         .update({ read: true })
                         .in('id', unreadIds)
                 }
@@ -59,7 +59,7 @@ export default function ChatWindow({ currentUser, otherUsername }) {
             .on('postgres_changes', {
                 event: 'INSERT',
                 schema: 'public',
-                table: 'messages',
+                table: 'chats',
             }, (payload) => {
                 const msg = payload.new
                 const isRelevant =
@@ -72,15 +72,17 @@ export default function ChatWindow({ currentUser, otherUsername }) {
                     // mark as read if we received it
                     if (msg.receiver_id === currentUser.id) {
                         supabase
-                            .from('messages')
+                            .from('chats')
                             .update({ read: true })
                             .eq('id', msg.id)
                     }
                 }
             })
-            .subscribe
+            .subscribe()
         
-        return () => supabase.removeChannel(channel)
+        return () => {
+            channel.unsubscribe()
+        }
     }, [otherUser])
 
     useEffect(() => {
@@ -92,7 +94,7 @@ export default function ChatWindow({ currentUser, otherUsername }) {
         if (!content.trim() || !otherUser) return
 
         const { error } = await supabase
-            .from('messages')
+            .from('chats')
             .insert({
                 sender_id: currentUser.id,
                 receiver_id: otherUser.id,
