@@ -55,3 +55,11 @@ export const removeCommunityPost = async (commId, userId, postBody) => {
     .eq("user_id", userId)
     .eq("body", postBody);
 };
+
+export const createCommunity = async (comm) => {
+  return await supabase.from("communities").insert({
+    name: comm.name,
+    description: comm.description,
+    img_url: comm.img_url,
+  });
+};
