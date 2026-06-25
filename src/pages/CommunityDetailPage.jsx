@@ -117,13 +117,14 @@ const CommunityDetailPage = () => {
 
     if (post.community_post_votes.find((v) => v.user_id === userId)) {
       await removeCommunityPostUpvote(postId, userId);
-      setCommPosts(
-        commPosts.map((p) => {
+      // remove upvote entry for this user on this post
+      setCommPosts((prevPosts) =>
+        prevPosts.map((p) => {
           if (p.id === postId) {
             return {
               ...p,
               community_post_votes: p.community_post_votes.filter(
-                (v) => v.user_id !== userId && v.post_id !== postId,
+                (v) => !(v.user_id === userId && v.post_id === postId),
               ),
             };
           }
@@ -138,13 +139,13 @@ const CommunityDetailPage = () => {
       }
 
       // update ui to show the new upvote count
-      setCommPosts(
-        commPosts.map((p) => {
+      setCommPosts((prevPosts) =>
+        prevPosts.map((p) => {
           if (p.id === postId) {
-            return ({
+            return {
               ...p,
               community_post_votes: [...p.community_post_votes, data[0]],
-            });
+            };
           }
           return p;
         }),
