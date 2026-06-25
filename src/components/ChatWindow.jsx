@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { supabase } from '../supabaseClient'
 import { DEFAULT_PFP_URL } from '../utils/profile'
+import { Link } from 'react-router'
 
 export default function ChatWindow({ currentUser, otherUsername }) {
     const [messages, setMessages] = useState([])
@@ -111,12 +112,14 @@ export default function ChatWindow({ currentUser, otherUsername }) {
 
         {/* chat header */}
         <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-200 shrink-0">
-            <img
-            src={otherUser?.pfp_url ?? DEFAULT_PFP_URL}
-            alt={otherUsername}
-            className="w-9 h-9 rounded-full border border-gray-200 object-cover"
-            />
-            <span className="font-medium text-sm">{otherUsername}</span>
+            <Link to={`/profile/${otherUsername}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                <img
+                    src={otherUser?.pfp_url ?? DEFAULT_PFP_URL}
+                    alt={otherUsername}
+                    className="w-9 h-9 rounded-full border border-gray-200 object-cover"
+                />
+                <span className="font-medium text-sm">{otherUsername}</span>
+            </Link>
         </div>
 
         {/* messages */}
