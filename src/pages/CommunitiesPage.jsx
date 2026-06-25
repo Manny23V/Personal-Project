@@ -10,8 +10,10 @@ import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import CommunityCard from "../components/CommunityCard.jsx";
 
 import { baseInputClasses } from "../utils/baseClasses.js";
+import { Link } from "react-router";
+import Button from "../components/Button.jsx";
 
-import Header from '../components/Header'
+import Header from "../components/Header";
 
 const CommunitiesPage = () => {
   const [comms, setComms] = useState(null);
@@ -106,34 +108,37 @@ const CommunitiesPage = () => {
 
   return (
     <>
-    {/* shows header */}
-    <Header onSearch={() => {}} />
+      {/* shows header */}
+      <Header onSearch={() => {}} />
 
-    <div className="max-w-300 mx-auto p-3">
-      <h2 className="font-medium mb-1">Communities</h2>
-      <p className="text-xs mb-4 text-blue-500">
-        Browse top communities for anime, manga, and more
-      </p>
-      <input
-        type="text"
-        value={query}
-        onChange={handleQueryChange}
-        className={baseInputClasses + " text-sm mb-4 focus:outline-blue-500"}
-        placeholder="Search..."
-      />
-      <main className="flex flex-wrap gap-4">
-        {filteredComms.map((c) => (
-          <CommunityCard
-            key={c.id}
-            comm={c}
-            onJoin={() => {
-              handleCommunityBtnClick(c.id, userComms);
-            }}
-            showJoinBtn={!userComms.find((uc) => uc.id === c.id)}
-          />
-        ))}
-      </main>
-    </div>
+      <div className="max-w-300 mx-auto p-3">
+        <h2 className="font-medium mb-1">Communities</h2>
+        <p className="text-xs mb-4 text-blue-500">
+          Browse top communities for anime, manga, and more
+        </p>
+        <input
+          type="text"
+          value={query}
+          onChange={handleQueryChange}
+          className={baseInputClasses + " text-sm mb-4 focus:outline-blue-500"}
+          placeholder="Search..."
+        />
+        <Link to="/communities/create">
+          <Button className="text-xs mb-4">Create a Community</Button>
+        </Link>
+        <main className="flex flex-wrap gap-4">
+          {filteredComms.map((c) => (
+            <CommunityCard
+              key={c.id}
+              comm={c}
+              onJoin={() => {
+                handleCommunityBtnClick(c.id, userComms);
+              }}
+              showJoinBtn={!userComms.find((uc) => uc.id === c.id)}
+            />
+          ))}
+        </main>
+      </div>
     </>
   );
 };

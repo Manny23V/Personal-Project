@@ -12,6 +12,8 @@ import FriendsPage from "./pages/FriendsPage.jsx";
 import AnimeDetailPage from "./components/AnimeDetailPage.jsx";
 import MangaDetailPage from "./components/MangaDetailPage.jsx";
 import ChatPage from './pages/ChatPage.jsx'
+import CreateCommunityForm from "./components/CreateCommunityForm.jsx";
+import CommunityPostDetailPage from "./pages/CommunityPostDetailPage.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -23,6 +25,11 @@ createRoot(document.getElementById("root")).render(
         <Route path="/profile/:username" element={<ProfilePage />} />
         <Route path="/communities" element={<CommunitiesPage />} />
         <Route path="/communities/:commId" element={<CommunityDetailPage />} />
+        <Route
+          path="/communities/:commId/posts/:postId"
+          element={<CommunityPostDetailPage />}
+        />
+        <Route path="/communities/create" element={<CreateCommunityForm />} />
         <Route path="/friends" element={<FriendsPage />} />
         <Route path="/anime/:id" element={<AnimeDetailPage />} />
         <Route path="/manga/:id" element={<MangaDetailPage />} />
