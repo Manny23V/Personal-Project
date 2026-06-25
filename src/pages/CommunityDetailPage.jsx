@@ -127,6 +127,7 @@ const CommunityDetailPage = () => {
               ),
             };
           }
+          return p;
         }),
       );
     } else {
@@ -140,10 +141,10 @@ const CommunityDetailPage = () => {
       setCommPosts(
         commPosts.map((p) => {
           if (p.id === postId) {
-            return {
+            return ({
               ...p,
               community_post_votes: [...p.community_post_votes, data[0]],
-            };
+            });
           }
           return p;
         }),
