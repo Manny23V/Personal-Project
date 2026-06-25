@@ -1,60 +1,73 @@
 import ImageFluid from "./ImageFluid.jsx";
 import { Link } from "react-router";
 import Button from "./Button.jsx";
-
-const HEADER_CLASSES = "bg-gray-800 text-white";
+import { useAuth } from "../utils/useAuth.js";
+import {
+  ArrowUpIcon,
+  ChatBubbleLeftIcon,
+  TrashIcon,
+} from "@heroicons/react/16/solid";
 
 // a forum-style card for community posts
 // onDelete must be a function that handles the removal of a post from the database
-const CommunityPostCard = ({ post, showDeleteBtn = false, onDelete }) => {
+const CommunityPostCard = ({
+  post,
+  onDelete,
+  onUpvote,
+  disableBtns = false,
+}) => {
   const author = post.profiles;
   const postDate = new Date(post.created_at).toLocaleString();
+  const { user } = useAuth();
+
   return (
-    <article className="my-4">
-      {/* topbar with username and post date (mobile) */}
-      <div
-        className={`flex h-20 gap-4 sm:gap-0 sm:hidden items-center ${HEADER_CLASSES}`}
-      >
-        <Link to={`/profile/${author.username}`} className="h-full flex">
-          <ImageFluid src={author.pfp_url} />
-        </Link>
-        <div>
-          <p className="font-semibold">{author.username}</p>
-          <p className="text-xs">Posted {postDate}</p>
+    <article className="my-4 shadow-sm rounded-sm max-w-md mx-auto outline outline-gray-300">
+      <section className="flex items-center gap-2 p-2">
+        <ImageFluid src={author.pfp_url} className="size-10" />
+        <p className="font-medium text-sm">{author.username}</p>
+        <p className="text-gray-500 text-xs">{postDate}</p>
+      </section>
+      {post.img_url && <ImageFluid src={post.img_url} className="h-60" />}
+      <div className="p-5">
+        <h2 className="text-lg font-medium">{post.title}</h2>
+        <p className="text-sm mb-4">{post.body}</p>
+
+        <div className="flex gap-2 flex-wrap">
+          <Button
+            className="text-xs flex gap-2"
+            disabled={disableBtns || !user}
+            onClick={onUpvote}
+            type="button"
+          >
+            <ArrowUpIcon className="w-4 text-white" />
+            {post.community_post_votes.length}
+          </Button>
+
+          <Link to={`/communities/${post.comm_id}/posts/${post.id}`}>
+            <Button
+              variant="outlined"
+              className="text-xs flex gap-2"
+              disabled={disableBtns}
+              type="button"
+            >
+              <ChatBubbleLeftIcon className="w-4 text-blue-500" />
+              {post.community_post_comments.length}
+            </Button>
+          </Link>
+
+          {user && post.user_id === user.id && (
+            <Button
+              variant="base"
+              className="text-xs flex gap-2 outline outline-red-500 text-red-500"
+              disabled={disableBtns}
+              type="button"
+              onClick={onDelete}
+            >
+              <TrashIcon className="w-4" />
+            </Button>
+          )}
         </div>
       </div>
-
-      <section className="flex outline outline-gray-300 rounded-xs sm:h-42">
-        {/* username and pfp */}
-        <div className={`hidden sm:flex sm:flex-col ${HEADER_CLASSES}`}>
-          <p className="px-1 text-sm">{author.username}</p>
-
-          <Link to={`/profile/${author.username}`} className="h-full flex">
-            <ImageFluid src={author.pfp_url} className="w-30 flex-1" />
-          </Link>
-        </div>
-
-        {/* date, post body, and options */}
-        <div className="flex-1 flex flex-col">
-          <p className={`hidden sm:block ${HEADER_CLASSES} px-4 text-sm`}>
-            Posted {postDate}
-          </p>
-          <div className="flex flex-col flex-1 p-2 sm:p-3 gap-4 sm:gap-2">
-            <p className="flex-1 text-sm max-h-20 overflow-auto">{post.body}</p>
-            {showDeleteBtn && (
-              <Button
-                variant="base"
-                className="max-w-24 text-xs outline outline-red-500 text-red-500 hover:bg-red-50"
-                onClick={() => {
-                  onDelete(post.comm_id, author.id, post.body);
-                }}
-              >
-                Delete Post
-              </Button>
-            )}
-          </div>
-        </div>
-      </section>
     </article>
   );
 };
