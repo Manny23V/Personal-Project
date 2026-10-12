@@ -1,6 +1,4 @@
 import { supabase } from "../supabaseClient.js";
-import sleep from "./sleep.js";
-const JIKAN_BASE_URL = "https://api.jikan.moe/v4";
 
 export const DEFAULT_PFP_URL =
   "https://i.pinimg.com/474x/94/cb/68/94cb68baea50bb98cdab65b74e731c1c.jpg";
@@ -129,24 +127,30 @@ export const getStats = (userAnime, userManga) => {
   return stats;
 };
 
-// gets the MAL resource from JIKAN with the given id
-// type indicates anime or manga
-// (e.g. getMalResource(4218, "manga"))
+// get mal resource (anime or manga) by id
 export const getMalResource = async (id, type, abortController) => {
   if (type !== "manga" && type !== "anime") {
     throw new Error("Invalid resource type");
   }
 
-  const res = await fetch(`${JIKAN_BASE_URL}/${type}/${id}`, {
-    signal: abortController?.signal,
-  });
-  const json = await res.json();
-  return json.data;
+  // get the resource by its id
+  let query = supabase.from(type).select("*").eq("mal_id", id);
+  if(abortController){
+    query = query.abortSignal(abortController?.signal);
+  }
+
+  // make request and raise any abort error
+  const { data, error } = await query.maybeSingle();
+  if (error) {
+    let subError = new Error("Aborted request");
+    subError.name = "AbortError";
+    throw subError;
+  }
+  return data;
 };
 
-// gets ALL the anime or manga for a user from JIKAN,
-// using getMalResource as a helper
-// (e.g. getUserResources([1, 5598, 42], "manga"))
+// gets all the anime or manga for a user based on the resource ids
+// the query can be aborted so useEffect has a cleanup function
 export const getAllMalResources = async (
   resourceIds,
   type,
@@ -156,14 +160,25 @@ export const getAllMalResources = async (
     throw new Error("Invalid resource type");
   }
 
-  const resources = [];
-  for (const resourceId of resourceIds) {
-    // sleep to avoid rate limits...
-    await sleep(400);
-    const resource = await getMalResource(resourceId, type, abortController);
-    resources.push(resource);
+  // query all mal resources of the type (anime or manga) that are in the resource ids list
+  let query = supabase.from(type).select("*").in("mal_id", resourceIds);
+  if(abortController){
+    query = query.abortSignal(abortController.signal);
   }
-  return resources;
+
+  // make the request and raise any abort error
+  const { data, error } = await query;
+  if (error) {
+    let subError = new Error("Aborted request");
+    subError.name = "AbortError";
+    throw subError;
+  }
+
+  const dataInOriginalOrder = resourceIds.map(
+    (id) => data.find((r) => r.mal_id === Number(id)) ?? null,
+  );
+
+  return dataInOriginalOrder;
 };
 
 // changes a user's profile picture, bio, or both in db

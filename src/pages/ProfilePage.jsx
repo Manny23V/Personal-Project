@@ -16,7 +16,6 @@ import {
   unfollowUser,
 } from "../utils/profile.js";
 
-import sleep from "../utils/sleep.js";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import EditProfileForm from "../components/EditProfileForm.jsx";
 import { DEFAULT_PFP_URL } from "../utils/profile.js";
@@ -62,10 +61,6 @@ const ProfilePage = () => {
       );
       setAnime(currentAnime);
     }
-
-    // only 3 reqs per second, so just sleep
-    // a little to restore our limit
-    await sleep(1500);
 
     // get user's current manga
     if (!manga) {
