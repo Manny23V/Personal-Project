@@ -96,9 +96,17 @@ export default function Header({ onSearch }) {
                             <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden z-50">
 
                                 <Link
+                                    to={`/dashboard`}
+                                    onClick={() => setMenuDropdownOpen(false)}
+                                    className="block w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50"
+                                >
+                                    Dashboard
+                                </Link>
+
+                                <Link
                                     to={`/communities`}
                                     onClick={() => setMenuDropdownOpen(false)}
-                                    className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50"
+                                    className="block w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50"
                                 >
                                     Communities
                                 </Link>

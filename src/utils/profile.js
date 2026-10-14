@@ -1,7 +1,7 @@
 import { supabase } from "../supabaseClient.js";
 
 export const DEFAULT_PFP_URL =
-  "https://i.pinimg.com/474x/94/cb/68/94cb68baea50bb98cdab65b74e731c1c.jpg";
+  "https://i.pinimg.com/736x/15/be/a5/15bea54a99cf47483daf992cb8eff4b2.jpg";
 
 // gets the id of every person that follows the user with user_id
 export const getFollowerIds = async (user_id) => {
@@ -237,4 +237,45 @@ export const checkIsFollowing = async (followerId, followedId) => {
   }
 
   return data[0] ? true : false;
+};
+
+export const getUserAnime = async (userId) => {
+  return await supabase
+    .from("user_anime")
+    .select("anime_id, status, created_at")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+};
+
+export const getUserManga = async (userId) => {
+  return await supabase
+    .from("user_manga")
+    .select("manga_id, status, created_at")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+};
+
+export const updateMalResourceStatus = async (userId, resId, resType, status) => {
+  return await supabase
+    .from(`user_${resType}`)
+    .update({ status })
+    .eq("user_id", userId)
+    .eq(`${resType}_id`, resId);
+};
+
+export const getFriends = async (userId) => {
+  return await supabase
+    .from("friendships")
+    .select(
+      `
+      id,
+      user_id,
+      friend_id,
+      created_at,
+      user:profiles!friendships_user_id_fkey(username, pfp_url),
+      friend:profiles!friendships_friend_id_fkey(username, pfp_url)
+      `,
+    )
+    .eq("status", "accepted")
+    .or(`user_id.eq.${userId},friend_id.eq.${userId}`);
 };

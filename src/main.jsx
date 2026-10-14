@@ -12,6 +12,7 @@ import FriendsPage from "./pages/FriendsPage.jsx";
 import AnimeDetailPage from "./components/AnimeDetailPage.jsx";
 import MangaDetailPage from "./components/MangaDetailPage.jsx";
 import ChatPage from './pages/ChatPage.jsx'
+import DashboardPage from "./pages/DashboardPage.jsx";
 import CreateCommunityForm from "./components/CreateCommunityForm.jsx";
 import CommunityPostDetailPage from "./pages/CommunityPostDetailPage.jsx";
 
@@ -34,6 +35,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/anime/:id" element={<AnimeDetailPage />} />
         <Route path="/manga/:id" element={<MangaDetailPage />} />
         <Route path="/chat/:username" element={<ChatPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
