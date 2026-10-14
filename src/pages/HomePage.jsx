@@ -2,81 +2,60 @@ import { useState, useEffect } from 'react'
 import HP_Carousel from '../components/HP_Carousel'
 import AnimeProp_HP from '../components/AnimeProp_HP'
 import MangaProp_HP from '../components/MangaProp_HP'
+import { getTopAnime, getRecommendations, searchAnime } from '../utils/mal.js'
 
 export default function HomePage({searchQuery}) {
-  const [popularAnime, setPopularAnime]               = useState([])
-  const [recommendedAnime, setRecommendedAnime]       = useState([])
-  const [recommendedManga, setRecommendedManga]       = useState([])
-  const [searchResults, setSearchResults]             = useState([])
-  const [loading, setLoading]                         = useState(true)
-  const [searching, setSearching]                     = useState(false)
-  const [error, setError]                             = useState(null)
+  // Recommendations and popular anime
+  const [popularAnime, setPopularAnime] = useState([]);
+  const [recommendedAnime, setRecommendedAnime] = useState([]);
+  const [recommendedManga, setRecommendedManga] = useState([]);
 
+  // States for searching, loading, etc.
+  const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searching, setSearching] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Gets all the popular and recommended mal resources
   useEffect(() => {
-    fetchAll()
-  }, [])
+    const fetchAll = async () => {
+      try {
+        const [popular, recommendedAni, recommendedMa] = await Promise.all([
+          getTopAnime(),
+          getRecommendations("anime"),
+          getRecommendations("manga"),
+        ]);
 
+        setPopularAnime(popular);
+        setRecommendedAnime(recommendedAni);
+        setRecommendedManga(recommendedMa);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAll();
+  }, []);
+
+  // Handles search results 
   useEffect(() => {
-    if (!searchQuery) return
-    fetchSearchResults(searchQuery)
-  }, [searchQuery])
-
-  const fetchAll = async () => {
-    try {
-
-      const [popularRes, recommendedRes, recommendedMangaRes] = await Promise.all([
-        fetch('https://api.jikan.moe/v4/top/anime'),
-        fetch('https://api.jikan.moe/v4/recommendations/anime'),
-        fetch('https://api.jikan.moe/v4/recommendations/manga')
-      ])
-
-      if (!popularRes.ok || !recommendedRes.ok || !recommendedMangaRes.ok) {
-        throw new Error('Failed to fetch anime')
-      }
-
-      const popularData = await popularRes.json()
-      const recommendedAniData = await recommendedRes.json()
-      const recommendedMaData = await recommendedMangaRes.json()
-
-      setPopularAnime(popularData.data)
-
-      const recommendations = recommendedAniData.data
-        .flatMap((item) => item.entry)
-
-      setRecommendedAnime(recommendations)
-
-      const recommendationsMA = recommendedMaData.data
-        .flatMap((item) => item.entry)
-
-      setRecommendedManga(recommendationsMA)
-
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
+    if (!searchQuery) {
+      return;
     }
-  }
 
-  const fetchSearchResults = async (query) => {
-    setSearching(true)
-    try {
-      const response =  await fetch(
-        `https://api.jikan.moe/v4/anime?q=${encodeURIComponent(query)}`
-      )
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch search results')
+    const fetchSearchResults = async (query) => {
+      setSearching(true);
+      try {
+        setSearchResults(await searchAnime(query));
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setSearching(false);
       }
-
-      const data = await response.json()
-      setSearchResults(data.data)
-
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setSearching(false)
-    }
-  }
+    };
+    fetchSearchResults(searchQuery);
+  }, [searchQuery]);
 
   if (loading) {
     return (

@@ -2,7 +2,6 @@ import Modal from "./Modal";
 import Button from "./Button";
 import ImageFluid from "./ImageFluid";
 import Notification, { NOTIFICATION_TIMEOUT } from "./Notification";
-import sleep from "../utils/sleep";
 
 import { baseInputClasses } from "../utils/baseClasses";
 import { useState } from "react";
@@ -40,32 +39,26 @@ const ProfileResourceForm = ({ onClose, onSubmit, resourceType }) => {
 
   const handleInputChange = (e) => {
     setResource({ ...resource, [e.target.name]: e.target.value });
-    // change displayed image when id changes
-    if (e.target.name === "id") {
-    }
   };
 
   const handlePreview = () => {
-    // rate limits...
     setDisabled(true);
-    sleep(500).then(() => {
-      getMalResource(resource.id, resourceType).then((res) => {
-        // put a default picture if anime/manga doesn't exist
-        if (!res) {
-          setPreviewRes({
-            title: DEFAULT_RES_TITLE,
-            imgUrl: DEFAULT_RES_IMG_URL,
-          });
-          doErrorTimeout(`${resourceType} doesn't exist (preview)`, 1000);
-          return;
-        }
-
+    getMalResource(resource.id, resourceType).then((res) => {
+      // put a default picture if anime/manga doesn't exist
+      if (!res) {
         setPreviewRes({
-          title: res.title,
-          imgUrl: res.images.jpg.large_image_url,
+          title: DEFAULT_RES_TITLE,
+          imgUrl: DEFAULT_RES_IMG_URL,
         });
-        setDisabled(false);
+        doErrorTimeout(`${resourceType} doesn't exist (preview)`, 1000);
+        return;
+      }
+
+      setPreviewRes({
+        title: res.title,
+        imgUrl: res.images.jpg.large_image_url,
       });
+      setDisabled(false);
     });
   };
 
